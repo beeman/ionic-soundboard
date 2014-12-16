@@ -1,0 +1,11 @@
+<ion-view title="{{pageTitle}}">
+    <ion-content padding="true" class="has-header">
+        <div ng-repeat="sounds in soundsrows" class="no-height-buttons">
+            <div class="row">
+                <div ng-repeat="sound in sounds" class="col">
+                    <button class="button button-stable button-block" ng-click="playFile(sound.file)">{{sound.label}}</button>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

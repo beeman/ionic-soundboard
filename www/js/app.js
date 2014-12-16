@@ -1,21 +1,90 @@
-// Ionic Starter App
+var app = angular.module('app', ['ionic', 'ngCordova']);
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic'])
+app.run(function ($ionicPlatform) {
+    $ionicPlatform.ready(function () {
+        if (window.cordova && window.cordova.plugins.Keyboard) {
+            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+        }
+        if (window.StatusBar) {
+            StatusBar.styleDefault();
+        }
+    });
+});
 
-.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-    if(window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+app.config(function ($stateProvider, $urlRouterProvider) {
+    $stateProvider
+        .state('main', {
+            url: '/',
+            templateUrl: 'templates/main.html'
+        });
+    $urlRouterProvider.otherwise('/');
+});
+
+app.controller('appCtrl', function ($scope, $cordovaMedia, $ionicLoading) {
+
+    $scope.pageTitle = "Ionic Soundboard";
+
+    $scope.playFile = function (soundFile) {
+
+        console.log("Platform: " + ionic.Platform.platform());
+
+        if(ionic.Platform.platform().toLowerCase() === 'android') {
+            soundFile = '/android_asset/www/' + soundFile;
+        }
+
+        console.log("Playing : " + soundFile);
+
+        var media = new Media(soundFile, null, mediaError, mediaStatusCallback);
+        $cordovaMedia.play(media);
+    };
+
+    var mediaStatusCallback = function(status) {
+        console.log("Status: " + status);
+        if(status == 1) {
+            $ionicLoading.show({template: 'Loading...'});
+        } else {
+            $ionicLoading.hide();
+        }
+    };
+
+    $scope.soundsrows = [
+        [
+            {
+                label: "Altair",
+                file: "sounds/Altair.wav"
+            }, {
+                label: "Antares",
+                file: "sounds/Altair.wav"
+            }
+        ], [
+            {
+                label: "Deneb",
+                file: "sounds/Deneb.wav"
+            }, {
+                label: "Hojus",
+                file: "sounds/Hojus.wav"
+            }
+        ], [
+            {
+                label: "Lalande",
+                file: "sounds/Lalande.wav"
+            }, {
+                label: "Mira",
+                file: "sounds/Mira.wav"
+            }
+        ], [
+            {
+                label: "Proxima",
+                file: "sounds/Proxima.wav"
+            }, {
+                label: "Upsilon",
+                file: "sounds/Upsilon.wav"
+            }
+        ]
+    ];
+
+    function mediaError(e) {
+        console.log(JSON.stringify(e));
     }
-    if(window.StatusBar) {
-      // Set the statusbar to use the default style, tweak this to
-      // remove the status bar on iOS or change it to use white instead of dark colors.
-      StatusBar.styleDefault();
-    }
-  });
+
 });
